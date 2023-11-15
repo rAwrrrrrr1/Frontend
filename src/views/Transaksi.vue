@@ -1,0 +1,194 @@
+<template>
+  <div>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
+      <div class="container">
+        <router-link :to="{ name: 'home' }" class="navbar-brand">HOME</router-link>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <router-link :to="{ name: 'jadwal' }" class="nav-link active" aria-current="page">JADWAL</router-link>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Content Container -->
+    <div class="container mt-3">
+      <!-- Page Title -->
+      <h2>{{ pageTitle }}</h2>
+
+      <!-- Calendar Component -->
+      <div class="calendar">
+        <div class="header">
+          <button @click="previousMonth">&lt;</button>
+          <h2>{{ currentMonth }}</h2>
+          <button @click="nextMonth">&gt;</button>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Minggu</th>
+              <th>Senin</th>
+              <th>Selasa</th>
+              <th>Rabu</th>
+              <th>Kamis</th>
+              <th>Jumat</th>
+              <th>Sabtu</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(week, index) in calendar" :key="index">
+              <td v-for="(day, idx) in week" :key="idx" @click="selectDate(day)">
+                {{ day.date }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Show Selected Day Data -->
+      <div v-if="selectedDate">
+        <h3>Data untuk {{ selectedDate.toLocaleDateString('id-ID') }}</h3>
+        <!-- Tampilkan data sesuai kebutuhan, misalnya tabel data transaksi untuk hari itu -->
+        <table class="table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nama</th>
+              <th>Tanggal</th>
+              <!-- Add more table headers as needed -->
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Iterate through your data to generate rows -->
+            <tr v-for="item in getDataForSelectedDate(selectedDate)" :key="item.id" class="table-row">
+              <td>{{ item.id }}</td>
+              <td>{{ item.nama }}</td>
+              <td>{{ item.tanggal }}</td>
+              <!-- Add more table cells as needed -->
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Router View -->
+      <router-view></router-view>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      pageTitle: 'Transaksi',
+      currentDate: new Date(),
+      selectedDate: null,
+      tableData: [
+        { id: 1, nama: 'John Doe', tanggal: '2023-11-11' },
+        { id: 2, nama: 'Jane Doe', tanggal: '2023-11-12' },
+        // Add more data objects as needed
+      ],
+    };
+  },
+  computed: {
+    currentMonth() {
+      const options = { month: 'long', year: 'numeric' };
+      return this.currentDate.toLocaleDateString('id-ID', options);
+    },
+    calendar() {
+      const firstDay = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), 1);
+      const lastDay = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth() + 1, 0);
+
+      const days = [];
+      let currentWeek = [];
+
+      for (let day = 1; day <= lastDay.getDate(); day++) {
+        const date = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), day);
+        const isCurrentMonth = date.getMonth() === this.currentDate.getMonth();
+        currentWeek.push({ date: day, isCurrentMonth });
+        if (date.getDay() === 6 || day === lastDay.getDate()) {
+          days.push(currentWeek);
+          currentWeek = [];
+        }
+      }
+
+      return days;
+    },
+  },
+  methods: {
+    previousMonth() {
+      this.currentDate = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth() - 1, 1);
+    },
+    nextMonth() {
+      this.currentDate = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth() + 1, 1);
+    },
+    selectDate(day) {
+      if (day.isCurrentMonth) {
+        this.selectedDate = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), day.date);
+        // Do something with the selected date
+        console.log('Selected Date:', this.selectedDate.toISOString());
+      }
+    },
+    getDataForSelectedDate(selectedDate) {
+      // Contoh: Ambil data transaksi untuk tanggal tertentu
+      // Gantilah ini dengan logika yang sesuai dengan kebutuhan aplikasi Anda
+      const formattedDate = selectedDate.toISOString().split('T')[0];
+      return this.tableData.filter(item => item.tanggal === formattedDate);
+    },
+  },
+};
+</script>
+
+<style scoped>
+.calendar {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 0.5rem;
+  text-align: center;
+  border: 1px solid #ddd;
+}
+
+td:hover {
+  background-color: #f5f5f5;
+  cursor: pointer;
+}
+
+th {
+  background-color: #f2f2f2;
+}
+
+/* Add margin or padding to create separation between table rows */
+.table-row {
+  margin-bottom: 10px; /* Adjust the value based on your preference */
+}
+</style>
