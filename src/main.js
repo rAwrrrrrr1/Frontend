@@ -5,8 +5,14 @@ import { createApp } from 'vue';
 import App from './App.vue';
 
 //import config router
-import router from './'
+import router from './';
 
+import 'chart.js/auto';
+
+import 'bootstrap/dist/css/bootstrap.css'
+import 'jquery/dist/jquery.min'
+import 'popper.js/dist/popper.min'
+import 'bootstrap/dist/js/bootstrap.min'
 //create App Vue
 const app = createApp(App);
 

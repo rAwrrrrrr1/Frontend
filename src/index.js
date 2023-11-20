@@ -11,18 +11,22 @@ const routes = [
     {
         path: '/home',
         name: 'home',
-        component: () => import('../src/views/Home.vue')
+        component: () => import('../src/components/Home.vue'),
+
+        children:[
+            {
+                path: '/jadwal',
+                name: 'jadwal',
+                component: () => import('../src/views/Jadwal.vue')
+            },
+            {
+                path: '/transaksi',
+                name: 'transaksi',
+                component: () => import('../src/views/Transaksi.vue')
+            },
+        ],
     },
-    {
-        path: '/jadwal',
-        name: 'jadwal',
-        component: () => import('../src/views/Jadwal.vue')
-    },
-    {
-        path: '/transaksi',
-        name: 'transaksi',
-        component: () => import('../src/views/Transaksi.vue')
-    },
+    
 ]
 
 //create router

@@ -1,21 +1,44 @@
 <template>
   <div class="login-wrapper">
     <div class="login-container">
-      <h2 class="login-header">Login</h2>
-      <form @submit.prevent="login" class="login-form">
-        <div class="form-group">
-          <label for="username">Username:</label>
-          <input type="text" v-model="username" class="form-input" required>
+      <div class="login-box">
+        <div class="login-logo">
+          <b>WinsArena</b>
         </div>
-        <div class="form-group">
-          <label for="password">Password:</label>
-          <input type="password" v-model="password" class="form-input" required>
+        <!-- /.login-logo -->
+        <div class="login-box-body">
+          <p class="login-box-msg">Log in to start your session</p>
+
+          <form @submit.prevent="login" class="login-form">
+            <div class="form-group has-feedback">
+              <input type="text" v-model="username" class="form-control" placeholder="Username" required>
+              <span class="glyphicon glyphicon-user form-control-feedback"></span>
+            </div>
+            <br>
+            <div class="form-group has-feedback">
+              <input type="password" v-model="password" class="form-control" placeholder="Password" required>
+              <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+            </div>
+            <div class="row">
+              <div class="col-xs-8">
+              </div>
+              <!-- /.col -->
+              <br>
+              <div class="col-xs-4">
+                <button type="submit" class="btn btn-primary btn-block btn-flat">Log In</button>
+              </div>
+              <router-link :to="{ name: 'home' }">Home</router-link>
+              <!-- /.col -->
+            </div>
+          </form>
         </div>
-        <button type="submit" class="login-button">Login</button>
-      </form>
-      <router-link :to="{ name: 'home' }">Home</router-link>
+        <!-- /.login-box-body -->
+      </div>
+      <!-- /.login-box -->
     </div>
+    <!-- /.login-container -->
   </div>
+  <!-- /.login-wrapper -->
 </template>
 
 <script>
@@ -47,6 +70,7 @@ export default {
 
 <style scoped>
 .login-wrapper {
+  background-color: #ecf0f5;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -54,51 +78,61 @@ export default {
 }
 
 .login-container {
-  max-width: 300px;
-  padding: 20px;
-  border: 1px solid #3498db;
-  border-radius: 5px;
-  box-shadow: 0px 0px 10px 0px #3498db;
+  width: 360px;
 }
 
-.login-header {
-  color: #3498db;
+.login-box {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.login-logo {
+  font-size: 35px;
+  font-weight: 300;
   text-align: center;
+  margin-bottom: 25px;
+  padding: 15px;
+  color: #444;
 }
 
-.login-form {
-  margin-top: 15px;
+.login-box-body {
+  padding: 20px;
 }
 
-.form-group {
-  margin-bottom: 15px;
+.login-box-msg {
+  margin: 0;
+  text-align: center;
+  font-size: 18px;
+  margin-bottom: 20px;
 }
 
-label {
-  display: block;
-  margin-bottom: 5px;
+.form-control {
+  border: 1px solid #d2d6de;
+  border-radius: 4px;
+  box-shadow: none;
+  padding: 12px;
+  height: 45px;
 }
 
-.form-input {
-  width: 100%;
-  padding: 8px;
-  box-sizing: border-box;
-  border: 1px solid #3498db;
-  border-radius: 3px;
+.checkbox {
+  margin-top: 0;
 }
 
-.login-button {
-  background-color: #3498db;
-  color: white;
-  padding: 10px 15px;
-  border: none;
-  border-radius: 3px;
-  cursor: pointer;
-  width: 100%;
-  transition: background-color 0.3s ease;
+.btn-flat {
+  border-radius: 4px;
 }
 
-.login-button:hover {
-  background-color: #2980b9;
+.btn-social {
+  color: #fff;
+}
+
+.btn-facebook {
+  background-color: #3b5998;
+}
+
+.btn-google {
+  background-color: #dd4b39;
 }
 </style>
