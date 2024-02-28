@@ -27,7 +27,7 @@
           <tbody>
             <tr v-for="(week, index) in calendar" :key="index">
               <td v-for="(day, idx) in week" :key="idx" @click="selectDate(day)">
-                {{ day.date }}
+                <span v-if="day">{{ day.date }}</span>
               </td>
             </tr>
           </tbody>
@@ -85,23 +85,37 @@ export default {
       return this.currentDate.toLocaleDateString('id-ID', options);
     },
     calendar() {
-      const firstDay = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), 1);
-      const lastDay = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth() + 1, 0);
+      const firstDayOfMonth = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), 1);
+      const lastDayOfMonth = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth() + 1, 0);
 
-      const days = [];
+      const startDayOfWeek = firstDayOfMonth.getDay(); // Mendapatkan hari pertama dalam minggu
+      const totalDaysOfMonth = lastDayOfMonth.getDate(); // Mendapatkan total hari dalam bulan
+
+      const weeks = [];
       let currentWeek = [];
 
-      for (let day = 1; day <= lastDay.getDate(); day++) {
-        const date = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), day);
-        const isCurrentMonth = date.getMonth() === this.currentDate.getMonth();
-        currentWeek.push({ date: day, isCurrentMonth });
-        if (date.getDay() === 6 || day === lastDay.getDate()) {
-          days.push(currentWeek);
+      // Tambahkan hari kosong sebelum hari pertama dalam bulan
+      for (let i = 0; i < startDayOfWeek; i++) {
+        currentWeek.push(null);
+      }
+
+      // Iterasi untuk menambahkan tanggal-tanggal dalam bulan
+      for (let day = 1; day <= totalDaysOfMonth; day++) {
+        currentWeek.push({ date: day, isCurrentMonth: true });
+        if (currentWeek.length === 7) {
+          weeks.push(currentWeek);
           currentWeek = [];
         }
       }
 
-      return days;
+      // Tambahkan hari kosong setelah tanggal terakhir dalam bulan
+      while (currentWeek.length < 7) {
+        currentWeek.push(null);
+      }
+
+      weeks.push(currentWeek);
+
+      return weeks;
     },
   },
   methods: {
@@ -112,7 +126,7 @@ export default {
       this.currentDate = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth() + 1, 1);
     },
     selectDate(day) {
-      if (day.isCurrentMonth) {
+      if (day && day.isCurrentMonth) {
         this.selectedDate = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), day.date);
         // Do something with the selected date
         console.log('Selected Date:', this.selectedDate.toISOString());
