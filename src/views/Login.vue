@@ -11,7 +11,7 @@
 
           <form @submit.prevent="login" class="login-form">
             <div class="form-group has-feedback">
-              <input type="text" v-model="username" class="form-control" placeholder="Username" required>
+              <input type="text" v-model="email" class="form-control" placeholder="Email" required>
               <span class="glyphicon glyphicon-user form-control-feedback"></span>
             </div>
             <br>
@@ -27,7 +27,6 @@
               <div class="col-xs-4">
                 <button type="submit" class="btn btn-primary btn-block btn-flat">Log In</button>
               </div>
-              <router-link :to="{ name: 'home' }">Home</router-link>
               <!-- /.col -->
             </div>
           </form>
@@ -42,31 +41,48 @@
 </template>
 
 <script>
+// Import Axios
+import axios from 'axios';
+
 export default {
   data() {
     return {
-      username: '',
+      email: '',
       password: '',
       error: null,
     };
   },
   methods: {
-    login() {
-      // Implement logic for login here
-      if (this.username === 'user' && this.password === 'password') {
-        // Contoh login berhasil
-        console.log('Login successful');
-        this.error = null;
-        // Redirect ke halaman lain jika diperlukan
-      } else {
-        // Contoh login gagal
-        console.error('Login failed');
-        this.error = 'Invalid username or password';
+    async login() {
+      try {
+        // Kirim permintaan login menggunakan Axios
+        const response = await axios.post('http://127.0.0.1:8000/api/login', {
+          email: this.email,
+          password: this.password
+        });
+
+        // Cek status respons
+        if (response.status === 200) {
+          // Login berhasil
+          console.log('Login successful');
+          this.error = null;
+          // Redirect ke halaman Home
+          this.$router.push('home');
+        } else {
+          // Login gagal karena respons status bukan 200
+          console.error('Login failed');
+          this.error = 'Invalid username or password';
+        }
+      } catch (error) {
+        // Tangani kesalahan saat melakukan permintaan
+        console.error('Error during login:', error);
+        this.error = 'An error occurred during login';
       }
     },
   },
 };
 </script>
+
 
 <style scoped>
 .login-wrapper {
