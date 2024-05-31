@@ -14,12 +14,25 @@
             <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
                 <div class="position-sticky pt-3">                    
                     <ul class="nav flex-column">
-                        <li class="nav-item">
+                        <!-- <li class="nav-item">
                             <router-link :to="{ name: 'jadwal' }" class="nav-link">Jadwal</router-link>
-                        </li>
+                        </li> -->
                         <li class="nav-item">
                             <router-link :to="{ name: 'transaksi' }" class="nav-link">Transaksi</router-link>
                         </li>
+                        <!-- Dropdown for Field Types -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="fieldDropdown" role="button"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                Lapangan
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="fieldDropdown">
+                                <li><router-link :to="{ name: 'badminton' }" class="dropdown-item">Badminton</router-link></li>
+                                <li><router-link :to="{ name: 'futsal' }" class="dropdown-item">Futsal</router-link></li>
+                                <li><router-link :to="{ name: 'minisoccer' }" class="dropdown-item">Mini Soccer</router-link></li>
+                            </ul>
+                        </li>
+                        <!-- End Dropdown -->
                     </ul>
                 </div>
                 <div class="position-bottom pt-3">

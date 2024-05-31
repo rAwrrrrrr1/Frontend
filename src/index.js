@@ -24,6 +24,22 @@ const routes = [
                 name: 'transaksi',
                 component: () => import('../src/views/Transaksi.vue')
             },
+            {
+                path: '/badminton',
+                name: 'badminton',
+                component: () => import('../src/views/Badminton.vue')
+              },
+              {
+                path: '/futsal',
+                name: 'futsal',
+                component: () => import('../src/views/Futsal.vue')
+              },
+              {
+                path: '/minisoccer',
+                name: 'minisoccer',
+                component: () => import('../src/views/MiniSoccer.vue')
+              }
+              
         ],
     },
     
