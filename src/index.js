@@ -27,28 +27,42 @@ const routes = [
             {
                 path: '/badminton',
                 name: 'badminton',
-                component: () => import('../src/views/Badminton.vue')
-              },
-              {
+                component: () => import('../src/views/Badminton/Badminton.vue')
+            },
+            {
                 path: '/futsal',
                 name: 'futsal',
-                component: () => import('../src/views/Futsal.vue')
-              },
-              {
+                component: () => import('../src/views/Futsal/Futsal.vue')
+            },
+            {
                 path: '/minisoccer',
                 name: 'minisoccer',
-                component: () => import('../src/views/MiniSoccer.vue')
-              }
-              
+                component: () => import('../src/views/MiniSoccer/MiniSoccer.vue')
+            },
+            // Route untuk halaman EditBadminton
+            {
+                path: '/editbadminton',
+                name: 'EditBadminton',
+                component: () => import('../src/views/Badminton/EditBadminton.vue')
+            },
+            {
+                path: '/editfutsal',
+                name: 'EditFutsal',
+                component: () => import('../src/views/Futsal/EditFutsal.vue')
+            },
+            {
+                path: '/editMinisoccer',
+                name: 'EditMinisoccer',
+                component: () => import('../src/views/MiniSoccer/EditMiniSoccer.vue')
+            },
         ],
     },
-    
 ]
 
 //create router
 const router = createRouter({
     history: createWebHistory(),
-    routes // <-- routes,
+    routes
 })
 
 export default router
