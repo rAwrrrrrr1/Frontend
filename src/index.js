@@ -55,6 +55,22 @@ const routes = [
                 name: 'EditMinisoccer',
                 component: () => import('../src/views/MiniSoccer/EditMiniSoccer.vue')
             },
+            // Route untuk halaman AddBadminton
+            {
+                path: '/addbadminton',
+                name: 'AddBadminton',
+                component: () => import('../src/views/Badminton/AddBadminton.vue')
+            },
+            {
+                path: '/addfutsal',
+                name: 'AddFutsal',
+                component: () => import('../src/views/Futsal/AddFutsal.vue')
+            },
+            {
+                path: '/addminisoccer',
+                name: 'AddMiniSoccer',
+                component: () => import('../src/views/MiniSoccer/AddMiniSoccer.vue')
+            },
         ],
     },
 ]

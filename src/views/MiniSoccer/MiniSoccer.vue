@@ -1,6 +1,7 @@
 <template>
   <div>
     <h1>Daftar Lapangan Mini Soccer</h1>
+    <button type="button" class="btn btn-success" @click="addMiniSoccer">Tambah Lapangan</button>
     <div class="minisoccer-container">
       <div class="minisoccer-box" v-for="minisoccer in minisoccers" :key="minisoccer.id">
         <h3>{{ minisoccer.nama }}</h3>
@@ -37,6 +38,10 @@ export default {
         .catch(error => {
           console.error(error);
         });
+    },
+    addMiniSoccer() {
+      // Navigasi ke halaman tambah data lapangan mini soccer
+      this.$router.push({ name: 'AddMiniSoccer' });
     },
     editMinisoccer(id) {
       // Navigasi ke halaman edit data lapangan mini soccer
@@ -98,5 +103,9 @@ export default {
 .minisoccer-box p {
   font-size: 1rem;
   color: #666;
+}
+
+button.btn-success {
+  margin-bottom: 20px;
 }
 </style>

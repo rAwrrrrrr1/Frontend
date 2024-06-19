@@ -1,6 +1,7 @@
 <template>
   <div>
     <h1>Daftar Lapangan Futsal</h1>
+    <button type="button" class="btn btn-success" @click="addFutsal">Tambah Lapangan</button>
     <div class="futsal-container">
       <div class="futsal-box" v-for="futsal in futsals" :key="futsal.id">
         <h3>{{ futsal.nama }}</h3>
@@ -37,6 +38,10 @@ export default {
         .catch(error => {
           console.error(error);
         });
+    },
+    addFutsal() {
+      // Navigasi ke halaman tambah data lapangan futsal
+      this.$router.push({ name: 'AddFutsal' });
     },
     editFutsal(id) {
       // Navigasi ke halaman edit data lapangan futsal
@@ -98,5 +103,9 @@ export default {
 .futsal-box p {
   font-size: 1rem;
   color: #666;
+}
+
+button.btn-success {
+  margin-bottom: 20px;
 }
 </style>

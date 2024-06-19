@@ -1,11 +1,13 @@
 <template>
   <div>
     <h1>Daftar Lapangan Badminton</h1>
+    <button type="button" class="btn btn-success" @click="addBadminton">Tambah Lapangan</button>
     <div class="badminton-container">
       <div class="badminton-box" v-for="badminton in badmintons" :key="badminton.id">
         <h3>{{ badminton.nama }}</h3>
         <p>Harga: {{ formatCurrency(badminton.harga) }}</p>
         <p>{{ badminton.keterangan }}</p>
+        <img :src="`http://127.0.0.1:8000/storage/app/${badminton.gambar}`" alt="Gambar Lapangan">
         <div>
           <button type="button" class="btn btn-primary" @click="editBadminton(badminton.id)">Edit</button>
           &nbsp;
@@ -37,6 +39,10 @@ export default {
         .catch(error => {
           console.error(error);
         });
+    },
+    addBadminton() {
+      // Navigasi ke halaman tambah data lapangan badminton
+      this.$router.push({ name: 'AddBadminton' });
     },
     editBadminton(id) {
       // Navigasi ke halaman edit data lapangan badminton
@@ -98,5 +104,9 @@ export default {
 .badminton-box p {
   font-size: 1rem;
   color: #666;
+}
+
+button.btn-success {
+  margin-bottom: 20px;
 }
 </style>
