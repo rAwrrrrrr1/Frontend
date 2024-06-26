@@ -33,6 +33,9 @@
                             </ul>
                         </li>
                         <!-- End Dropdown -->
+                        <li class="nav-item">
+                            <router-link :to="{ name: 'user' }" class="nav-link">User</router-link>
+                        </li>
                     </ul>
                 </div>
                 <div class="position-bottom pt-3">

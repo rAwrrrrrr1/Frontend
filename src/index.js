@@ -39,6 +39,11 @@ const routes = [
                 name: 'minisoccer',
                 component: () => import('../src/views/MiniSoccer/MiniSoccer.vue')
             },
+            {
+                path: '/user',
+                name: 'user',
+                component: () => import('../src/views/User.vue')
+            },
             // Route untuk halaman EditBadminton
             {
                 path: '/editbadminton',
