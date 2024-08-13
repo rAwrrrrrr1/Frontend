@@ -25,6 +25,11 @@ const routes = [
                 component: () => import('../src/views/Transaksi.vue')
             },
             {
+                path: '/system',
+                name: 'system',
+                component: () => import('../src/views/System.vue')
+            },
+            {
                 path: '/badminton',
                 name: 'badminton',
                 component: () => import('../src/views/Badminton/Badminton.vue')
@@ -46,17 +51,17 @@ const routes = [
             },
             // Route untuk halaman EditBadminton
             {
-                path: '/editbadminton',
+                path: '/editbadminton/:id',
                 name: 'EditBadminton',
                 component: () => import('../src/views/Badminton/EditBadminton.vue')
             },
             {
-                path: '/editfutsal',
+                path: '/editfutsal/:id',
                 name: 'EditFutsal',
                 component: () => import('../src/views/Futsal/EditFutsal.vue')
             },
             {
-                path: '/editMinisoccer',
+                path: '/editMinisoccer/:id',
                 name: 'EditMinisoccer',
                 component: () => import('../src/views/MiniSoccer/EditMiniSoccer.vue')
             },

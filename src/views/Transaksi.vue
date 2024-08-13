@@ -3,7 +3,7 @@
     <!-- Content Container -->
     <div class="container mt-3">
       <!-- Page Title -->
-      <h2>{{ pageTitle }}</h2>
+      <h1>{{ pageTitle }}</h1>
 
       <!-- Calendar Component -->
       <div class="calendar">
@@ -69,7 +69,7 @@
 export default {
   data() {
     return {
-      pageTitle: 'Transaksi',
+      pageTitle: 'TRANSAKSI',
       currentDate: new Date(),
       selectedDate: null,
       tableData: [

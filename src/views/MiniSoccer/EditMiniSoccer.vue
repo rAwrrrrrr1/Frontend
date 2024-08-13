@@ -52,6 +52,7 @@
           .then(response => {
             console.log('Data berhasil diperbarui:', response.data);
             // Redirect atau navigasi ke halaman lain setelah perubahan disimpan
+            this.$router.push('/minisoccer');
           })
           .catch(error => {
             console.error(error);

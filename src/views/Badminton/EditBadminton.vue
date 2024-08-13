@@ -35,6 +35,7 @@
     },
     mounted() {
       const id = this.$route.params.id;
+      console.log(id);
       this.fetchBadminton(id);
     },
     methods: {
@@ -52,6 +53,7 @@
           .then(response => {
             console.log('Data berhasil diperbarui:', response.data);
             // Redirect atau navigasi ke halaman lain setelah perubahan disimpan
+            this.$router.push('/badminton');
           })
           .catch(error => {
             console.error(error);

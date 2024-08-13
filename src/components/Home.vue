@@ -20,6 +20,9 @@
                         <li class="nav-item">
                             <router-link :to="{ name: 'transaksi' }" class="nav-link">Transaksi</router-link>
                         </li>
+                        <li class="nav-item">
+                            <router-link :to="{ name: 'system' }" class="nav-link">System</router-link>
+                        </li>
                         <!-- Dropdown for Field Types -->
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="fieldDropdown" role="button"
