@@ -41,11 +41,9 @@ export default {
         });
     },
     addBadminton() {
-      // Navigasi ke halaman tambah data lapangan badminton
       this.$router.push({ name: 'AddBadminton' });
     },
     editBadminton(id) {
-      // Navigasi ke halaman edit data lapangan badminton
       this.$router.push({ name: 'EditBadminton', params: { id: id } });
     },
     confirmDelete(id) {
@@ -54,11 +52,9 @@ export default {
       }
     },
     deleteBadminton(id) {
-      // Kirim permintaan DELETE ke API
       axios.delete(`http://127.0.0.1:8000/api/badminton/${id}`)
         .then(response => {
           console.log('Lapangan badminton berhasil dihapus:', response.data);
-          // Setelah berhasil dihapus, ambil ulang data lapangan badminton
           this.fetchBadmintons();
         })
         .catch(error => {

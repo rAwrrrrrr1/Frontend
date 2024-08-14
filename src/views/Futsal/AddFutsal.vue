@@ -1,6 +1,9 @@
 <template>
     <div>
       <h1>Tambah Lapangan Futsal</h1>
+
+      <button class="back-button" @click="goBack">&#8592; Kembali</button>
+
       <form @submit.prevent="submitForm" enctype="multipart/form-data">
         <div class="form-group">
           <label for="nama">Nama Lapangan</label>
@@ -60,6 +63,9 @@
         .catch(error => {
           console.error('Error saat menambahkan lapangan futsal:', error);
         });
+      },
+      goBack() {
+        this.$router.go(-1); 
       }
     }
   };
@@ -85,6 +91,25 @@
   
   button.btn-success {
     margin-top: 20px;
+  }
+
+  button:hover {
+    background-color: #0056b3;
+  }
+  
+  .back-button {
+    background-color: transparent;
+    border: 1px solid #007bff;
+    color: #007bff;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .back-button:hover {
+    background-color: #007bff;
+    color: white;
   }
   </style>
   

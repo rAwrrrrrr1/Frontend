@@ -1,6 +1,9 @@
 <template>
     <div>
       <h1>Tambah Lapangan Mini Soccer</h1>
+
+      <button class="back-button" @click="goBack">&#8592; Kembali</button>
+
       <form @submit.prevent="submitForm" enctype="multipart/form-data">
         <div class="form-group">
           <label for="nama">Nama Lapangan</label>
@@ -55,11 +58,14 @@
         })
         .then(response => {
           console.log('Lapangan mini soccer berhasil ditambahkan:', response.data);
-          this.$router.push({ name: 'minisoccer' }); // Navigate back to the list page
+          this.$router.push({ name: 'minisoccer' });
         })
         .catch(error => {
           console.error('Error saat menambahkan lapangan mini soccer:', error);
         });
+      },
+      goBack() {
+        this.$router.go(-1); 
       }
     }
   };
@@ -85,6 +91,35 @@
   
   button.btn-success {
     margin-top: 20px;
+  }
+
+  /* button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  } */
+  
+  button:hover {
+    background-color: #0056b3;
+  }
+  
+  .back-button {
+    background-color: transparent;
+    border: 1px solid #007bff;
+    color: #007bff;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .back-button:hover {
+    background-color: #007bff;
+    color: white;
   }
   </style>
   

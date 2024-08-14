@@ -51,7 +51,6 @@
         axios.put(`http://127.0.0.1:8000/api/soccer/${this.editedMiniSoccer.id}`, this.editedMiniSoccer)
           .then(response => {
             console.log('Data berhasil diperbarui:', response.data);
-            // Redirect atau navigasi ke halaman lain setelah perubahan disimpan
             this.$router.push('/minisoccer');
           })
           .catch(error => {
@@ -59,7 +58,7 @@
           });
       },
       goBack() {
-        this.$router.go(-1); // Kembali ke halaman sebelumnya
+        this.$router.go(-1); 
       }
     }
   }

@@ -7,6 +7,7 @@
         <h3>{{ minisoccer.nama }}</h3>
         <p>Harga: {{ formatCurrency(minisoccer.harga) }}</p>
         <p>{{ minisoccer.keterangan }}</p>
+        <img :src="`http://127.0.0.1:8000/storage/app/${minisoccers.gambar}`" alt="Gambar Lapangan">
         <div>
           <button type="button" class="btn btn-primary" @click="editMinisoccer(minisoccer.id)">Edit</button>
           &nbsp;
@@ -40,11 +41,9 @@ export default {
         });
     },
     addMiniSoccer() {
-      // Navigasi ke halaman tambah data lapangan mini soccer
       this.$router.push({ name: 'AddMiniSoccer' });
     },
     editMinisoccer(id) {
-      // Navigasi ke halaman edit data lapangan mini soccer
       this.$router.push({ name: 'EditMinisoccer', params: { id: id } });
     },
     confirmDelete(id) {
@@ -53,11 +52,9 @@ export default {
       }
     },
     deleteMinisoccer(id) {
-      // Kirim permintaan DELETE ke API
       axios.delete(`http://127.0.0.1:8000/api/soccer/${id}`)
         .then(response => {
           console.log('Lapangan mini soccer berhasil dihapus:', response.data);
-          // Setelah berhasil dihapus, ambil ulang data lapangan mini soccer
           this.fetchMinisoccers();
         })
         .catch(error => {

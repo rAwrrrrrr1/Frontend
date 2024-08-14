@@ -1,7 +1,7 @@
 <template>
     <div>
       <h1>Edit Data Lapangan Futsal</h1>
-      <!-- Tombol kembali ke halaman sebelumnya -->
+      
       <button class="back-button" @click="goBack">&#8592; Kembali</button>
       
       <form @submit.prevent="updateFutsal">
@@ -51,7 +51,6 @@
         axios.put(`http://127.0.0.1:8000/api/futsal/${this.editedFutsal.id}`, this.editedFutsal)
           .then(response => {
             console.log('Data berhasil diperbarui:', response.data);
-            // Redirect atau navigasi ke halaman lain setelah perubahan disimpan
             this.$router.push('/futsal');
           })
           .catch(error => {
@@ -59,7 +58,7 @@
           });
       },
       goBack() {
-        this.$router.go(-1); // Kembali ke halaman sebelumnya
+        this.$router.go(-1); 
       }
     }
   }

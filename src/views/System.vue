@@ -2,7 +2,6 @@
   <div>
     <h1>ADMIN SYSTEM</h1>
     
-    <!-- First Row -->
     <div class="row button-container">
       <div class="col">
         <button class="btn btn-primary w-100" @click="generateJadwalThisMonth">Generate Jadwal Bulan Ini</button>
@@ -12,7 +11,6 @@
       </div>
     </div>
 
-    <!-- Second Row -->
     <div class="row button-container mt-3">
       <div class="col">
         <button class="btn btn-primary w-100" @click="generateNoBooking">Generate No Booking</button>
@@ -22,7 +20,6 @@
       </div>
     </div>
 
-    <!-- Third Row with Button-like Switches -->
     <div class="row button-container mt-4">
       <div class="col">
         <button
