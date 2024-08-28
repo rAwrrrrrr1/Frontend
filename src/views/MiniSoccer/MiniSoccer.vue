@@ -7,7 +7,7 @@
         <h3>{{ minisoccer.nama }}</h3>
         <p>Harga: {{ formatCurrency(minisoccer.harga) }}</p>
         <p>{{ minisoccer.keterangan }}</p>
-        <img :src="`http://127.0.0.1:8000/storage/app/${minisoccers.gambar}`" alt="Gambar Lapangan">
+        <img :src="`http://127.0.0.1:8000/storage/${(minisoccer.gambar).substring(7)}`" alt="Gambar Lapangan" width="200px" height="auto" style="margin-bottom: 16px">
         <div>
           <button type="button" class="btn btn-primary" @click="editMinisoccer(minisoccer.id)">Edit</button>
           &nbsp;

@@ -13,13 +13,16 @@
         
         <label for="keterangan">Keterangan:</label>
         <textarea id="keterangan" v-model="editedBadminton.keterangan" required></textarea>
-        
+
+        <label for="gambar">Gambar</label>
+        <input type="file" id="gambar" @change="handleFileUpload">
+
         <button type="submit">Simpan Perubahan</button>
       </form>
     </div>
-  </template>
+</template>
   
-  <script>
+<script>
   import axios from 'axios';
   
   export default {
@@ -29,7 +32,8 @@
           id: null,
           nama: '',
           harga: null,
-          keterangan: ''
+          keterangan: '',
+          gambar: null,
         }
       };
     },
@@ -39,6 +43,9 @@
       this.fetchBadminton(id);
     },
     methods: {
+      handleFileUpload(event) {
+        this.editedBadminton.gambar = event.target.files[0];
+      },
       fetchBadminton(id) {
         axios.get(`http://127.0.0.1:8000/api/badminton/${id}`)
           .then(response => {
@@ -49,24 +56,40 @@
           });
       },
       updateBadminton() {
-        axios.put(`http://127.0.0.1:8000/api/badminton/${this.editedBadminton.id}`, this.editedBadminton)
-          .then(response => {
+        console.log(this.editedBadminton);
+
+        let formData = new FormData();
+        formData.append('nama', this.editedBadminton.nama);
+        formData.append('harga', this.editedBadminton.harga);
+        formData.append('keterangan', this.editedBadminton.keterangan);
+        if (this.editedBadminton.gambar) {
+            formData.append('gambar', this.editedBadminton.gambar);
+        }
+
+        axios.post(`http://127.0.0.1:8000/api/badminton/${this.editedBadminton.id}`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
+        .then(response => {
             console.log('Data berhasil diperbarui:', response.data);
-            // Redirect atau navigasi ke halaman lain setelah perubahan disimpan
             this.$router.push('/badminton');
-          })
-          .catch(error => {
+        })
+        .catch(error => {
             console.error(error);
-          });
-      },
+            if (error.response && error.response.data.errors) {
+                console.log(error.response.data.errors);
+            }
+        });
+    },
       goBack() {
         this.$router.go(-1); // Kembali ke halaman sebelumnya
       }
     }
   }
-  </script>
+</script>
   
-  <style scoped>
+<style scoped>
   label {
     display: block;
     margin-bottom: 10px;
@@ -74,6 +97,7 @@
   
   input[type="text"],
   input[type="number"],
+  input[type="file"],
   textarea {
     width: 100%;
     padding: 8px;
@@ -110,5 +134,5 @@
     background-color: #007bff;
     color: white;
   }
-  </style>
+</style>
   

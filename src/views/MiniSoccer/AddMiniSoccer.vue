@@ -24,9 +24,9 @@
         <button type="submit" class="btn btn-success">Simpan</button>
       </form>
     </div>
-  </template>
+</template>
   
-  <script>
+<script>
   import axios from 'axios';
   
   export default {
@@ -69,9 +69,9 @@
       }
     }
   };
-  </script>
+</script>
   
-  <style scoped>
+<style scoped>
   .form-group {
     margin-bottom: 15px;
   }
@@ -121,5 +121,5 @@
     background-color: #007bff;
     color: white;
   }
-  </style>
+</style>
   

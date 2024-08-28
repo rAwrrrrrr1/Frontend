@@ -7,8 +7,7 @@
         <h3>{{ futsal.nama }}</h3>
         <p>Harga: {{ formatCurrency(futsal.harga) }}</p>
         <p>{{ futsal.keterangan }}</p>
-        <img :src="`http://127.0.0.1:8000/storage/app/${futsal.gambar}`" alt="Gambar Lapangan">
-
+        <img :src="`http://127.0.0.1:8000/storage/${(futsal.gambar).substring(7)}`" alt="Gambar Lapangan" width="200px" height="auto" style="margin-bottom: 16px">
         <div>
           <button type="button" class="btn btn-primary" @click="editFutsal(futsal.id)">Edit</button>
           &nbsp;
