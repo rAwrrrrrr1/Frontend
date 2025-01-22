@@ -46,8 +46,9 @@
       handleFileUpload(event) {
         this.editedMiniSoccer.gambar = event.target.files[0];
       },
+
       fetchMiniSoccer(id) {
-        axios.get(`http://127.0.0.1:8000/api/soccer/${id}`)
+        axios.get(`http://172.20.10.5:8000/api/soccer/${id}`)
           .then(response => {
             this.editedMiniSoccer = response.data.data;
           })
@@ -55,6 +56,7 @@
             console.error(error);
           });
       },
+
       updateMiniSoccer() {
         console.log(this.editedMiniSoccer);
 
@@ -66,7 +68,7 @@
             formData.append('gambar', this.editedMiniSoccer.gambar);
         }
 
-        axios.post(`http://127.0.0.1:8000/api/soccer/${this.editedMiniSoccer.id}`, formData, {
+        axios.post(`http://172.20.10.5:8000/api/soccer/${this.editedMiniSoccer.id}`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
@@ -82,6 +84,7 @@
             }
         });
     },
+    
       goBack() {
         this.$router.go(-1); // Kembali ke halaman sebelumnya
       }

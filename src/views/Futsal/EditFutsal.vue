@@ -46,8 +46,9 @@
       handleFileUpload(event) {
         this.editedFutsal.gambar = event.target.files[0];
       },
+      
       fetchFutsal(id) {
-        axios.get(`http://127.0.0.1:8000/api/futsal/${id}`)
+        axios.get(`http://172.20.10.5:8000/api/futsal/${id}`)
           .then(response => {
             this.editedFutsal = response.data.data;
           })
@@ -55,6 +56,7 @@
             console.error(error);
           });
       },
+
       updateFutsal() {
         console.log(this.editedFutsal);
 
@@ -66,7 +68,7 @@
             formData.append('gambar', this.editedFutsal.gambar);
         }
 
-        axios.post(`http://127.0.0.1:8000/api/futsal/${this.editedFutsal.id}`, formData, {
+        axios.post(`http://172.20.10.5:8000/api/futsal/${this.editedFutsal.id}`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
@@ -82,6 +84,7 @@
             }
         });
     },
+
       goBack() {
         this.$router.go(-1); // Kembali ke halaman sebelumnya
       }

@@ -7,7 +7,7 @@
         <h3>{{ futsal.nama }}</h3>
         <p>Harga: {{ formatCurrency(futsal.harga) }}</p>
         <p>{{ futsal.keterangan }}</p>
-        <img :src="`http://127.0.0.1:8000/storage/${(futsal.gambar).substring(7)}`" alt="Gambar Lapangan" width="200px" height="auto" style="margin-bottom: 16px">
+        <img :src="`http://172.20.10.5:8000/storage/${(futsal.gambar).substring(7)}`" alt="Gambar Lapangan" width="200px" height="auto" style="margin-bottom: 16px">
         <div>
           <button type="button" class="btn btn-primary" @click="editFutsal(futsal.id)">Edit</button>
           &nbsp;
@@ -31,8 +31,9 @@ export default {
     this.fetchFutsals();
   },
   methods: {
+
     fetchFutsals() {
-      axios.get('http://127.0.0.1:8000/api/futsal')
+      axios.get('http://172.20.10.5:8000/api/futsal')
         .then(response => {
           this.futsals = response.data.data;
         })
@@ -40,6 +41,7 @@ export default {
           console.error(error);
         });
     },
+
     addFutsal() {
       // Navigasi ke halaman tambah data lapangan futsal
       this.$router.push({ name: 'AddFutsal' });
@@ -53,18 +55,18 @@ export default {
         this.deleteFutsal(id);
       }
     },
+
     deleteFutsal(id) {
-      // Kirim permintaan DELETE ke API
-      axios.delete(`http://127.0.0.1:8000/api/futsal/${id}`)
+      axios.delete(`http://172.20.10.5:8000/api/futsal/${id}`)
         .then(response => {
           console.log('Lapangan futsal berhasil dihapus:', response.data);
-          // Setelah berhasil dihapus, ambil ulang data lapangan futsal
           this.fetchFutsals();
         })
         .catch(error => {
           console.error('Error saat menghapus lapangan futsal:', error);
         });
     },
+    
     formatCurrency(amount) {
       return new Intl.NumberFormat('id-ID', {
         style: 'currency',

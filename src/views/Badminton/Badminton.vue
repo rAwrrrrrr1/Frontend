@@ -7,7 +7,8 @@
         <h3>{{ badminton.nama }}</h3>
         <p>Harga: {{ formatCurrency(badminton.harga) }}</p>
         <p>{{ badminton.keterangan }}</p>
-        <img :src="`http://127.0.0.1:8000/storage/${(badminton.gambar).substring(7)}`" alt="Gambar Lapangan" width="200px" height="auto" style="margin-bottom: 16px">
+        <img :src="`http://172.20.10.5:8000/storage/${(badminton.gambar).substring(7)}`" 
+          alt="Gambar Lapangan" width="200px" height="auto" style="margin-bottom: 16px">
         <div>
           <button type="button" class="btn btn-primary" @click="editBadminton(badminton.id)">Edit</button>
           &nbsp;
@@ -32,7 +33,7 @@ export default {
   },
   methods: {
     fetchBadmintons() {
-      axios.get('http://127.0.0.1:8000/api/badminton')
+      axios.get('http://172.20.10.5:8000/api/badminton')
         .then(response => {
           this.badmintons = response.data.data;
         })
@@ -51,8 +52,9 @@ export default {
         this.deleteBadminton(id);
       }
     },
+
     deleteBadminton(id) {
-      axios.delete(`http://127.0.0.1:8000/api/badminton/${id}`)
+      axios.delete(`http://172.20.10.5:8000/api/badminton/${id}`)
         .then(response => {
           console.log('Lapangan badminton berhasil dihapus:', response.data);
           this.fetchBadmintons();
@@ -61,6 +63,7 @@ export default {
           console.error('Error saat menghapus lapangan badminton:', error);
         });
     },
+    
     formatCurrency(amount) {
       return new Intl.NumberFormat('id-ID', {
         style: 'currency',

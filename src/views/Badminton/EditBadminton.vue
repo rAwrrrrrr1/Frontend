@@ -47,7 +47,7 @@
         this.editedBadminton.gambar = event.target.files[0];
       },
       fetchBadminton(id) {
-        axios.get(`http://127.0.0.1:8000/api/badminton/${id}`)
+        axios.get(`http://172.20.10.5:8000/api/badminton/${id}`)
           .then(response => {
             this.editedBadminton = response.data.data;
           })
@@ -66,7 +66,7 @@
             formData.append('gambar', this.editedBadminton.gambar);
         }
 
-        axios.post(`http://127.0.0.1:8000/api/badminton/${this.editedBadminton.id}`, formData, {
+        axios.post(`http://172.20.10.5:8000/api/badminton/${this.editedBadminton.id}`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }

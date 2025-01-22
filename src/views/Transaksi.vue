@@ -1,183 +1,290 @@
 <template>
   <div>
-    <!-- Content Container -->
-    <div class="container mt-3">
-      <!-- Page Title -->
-      <h1>{{ pageTitle }}</h1>
+    <h2>Transaction List</h2>
 
-      <!-- Calendar Component -->
-      <div class="calendar">
-        <div class="header">
-          <button @click="previousMonth">&lt;</button>
-          <h2>{{ currentMonth }}</h2>
-          <button @click="nextMonth">&gt;</button>
-        </div>
-        <table>
-          <thead>
-            <tr>
-              <th>Minggu</th>
-              <th>Senin</th>
-              <th>Selasa</th>
-              <th>Rabu</th>
-              <th>Kamis</th>
-              <th>Jumat</th>
-              <th>Sabtu</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(week, index) in calendar" :key="index">
-              <td v-for="(day, idx) in week" :key="idx" @click="selectDate(day)">
-                <span v-if="day">{{ day.date }}</span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <!-- Show Selected Day Data -->
-      <div v-if="selectedDate">
-        <h3>Data untuk {{ selectedDate.toLocaleDateString('id-ID') }}</h3>
-        <!-- Tampilkan data sesuai kebutuhan, misalnya tabel data transaksi untuk hari itu -->
-        <table class="table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Nama</th>
-              <th>Tanggal</th>
-              <!-- Add more table headers as needed -->
-            </tr>
-          </thead>
-          <tbody>
-            <!-- Iterate through your data to generate rows -->
-            <tr v-for="item in getDataForSelectedDate(selectedDate)" :key="item.id" class="table-row">
-              <td>{{ item.id }}</td>
-              <td>{{ item.nama }}</td>
-              <td>{{ item.tanggal }}</td>
-              <!-- Add more table cells as needed -->
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <!-- Router View -->
-      <router-view></router-view>
+    <!-- Dropdown untuk memilih bulan -->
+    <div>
+      <label for="monthSelect">Pilih Bulan: </label>
+      <select id="monthSelect" v-model="selectedMonth" @change="filterTransactionsByMonth">
+        <option value="">Semua Bulan</option>
+        <option v-for="month in months" :key="month.value" :value="month.value">{{ month.label }}</option>
+      </select>
     </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Status Pembayaran</th>
+          <th>Tanggal Pembayaran</th>
+          <th>No Booking</th>
+          <th>ID User</th>
+          <th>Total Pembayaran</th>
+          <th>Bukti Pembayaran</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-if="filteredTransactions.length === 0">
+          <td colspan="8" style="text-align: center;">No transactions found.</td>
+        </tr>
+        <tr v-for="transaction in paginatedTransactions" :key="transaction.id">
+          <td>{{ transaction.id }}</td>
+          <td>{{ transaction.status_pembayaran }}</td>
+          <td>{{ transaction.tanggal_pembayaran || '-' }}</td>
+          <td>{{ formatNoBooking(transaction) }}</td>
+          <td>{{ transaction.id_user }}</td>
+          <td>{{ formatRupiah(transaction.total_pembayaran) }}</td>
+          <td v-if="transaction.bukti_pembayaran">
+            <a :href="`http://172.20.10.5:8000/storage/${transaction.bukti_pembayaran.substring(7)}`" target="_blank">View Image</a>
+          </td>
+          <td v-else>-</td>
+          <td>
+            <button
+              v-if="transaction.status_pembayaran === 'Menunggu Konfirmasi'"
+              @click="confirmPayment(transaction.id)"
+            >
+              Confirm Payment
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Total Pembayaran -->
+    <div v-if="filteredTransactions.length > 0" class="total-payment">
+      <h3>Total Pembayaran: {{ formatRupiah(totalPayment) }}</h3>
+    </div>
+
+    <div class="pagination">
+      <button @click="prevPage" :disabled="currentPage === 1">Previous</button>
+      <span>Page {{ currentPage }} of {{ totalPages }}</span>
+      <button @click="nextPage" :disabled="currentPage === totalPages">Next</button>
+    </div>
+
+    <!-- Button to generate PDF -->
+    <button @click="generatePDF" class="generate-pdf-button">Generate PDF</button>
   </div>
 </template>
 
 <script>
+import axios from 'axios';
+import { jsPDF } from 'jspdf';
+import 'jspdf-autotable'; 
+
 export default {
   data() {
     return {
-      pageTitle: 'TRANSAKSI',
-      currentDate: new Date(),
-      selectedDate: null,
-      tableData: [
-        { id: 1, nama: 'John Doe', tanggal: '2023-11-11' },
-        { id: 2, nama: 'Jane Doe', tanggal: '2023-11-12' },
-        // Add more data objects as needed
+      transactions: [],
+      currentPage: 1,
+      itemsPerPage: 10,
+      selectedMonth: '',
+      months: [
+        { value: '01', label: 'Januari' },
+        { value: '02', label: 'Februari' },
+        { value: '03', label: 'Maret' },
+        { value: '04', label: 'April' },
+        { value: '05', label: 'Mei' },
+        { value: '06', label: 'Juni' },
+        { value: '07', label: 'Juli' },
+        { value: '08', label: 'Agustus' },
+        { value: '09', label: 'September' },
+        { value: '10', label: 'Oktober' },
+        { value: '11', label: 'November' },
+        { value: '12', label: 'Desember' },
       ],
     };
   },
   computed: {
-    currentMonth() {
-      const options = { month: 'long', year: 'numeric' };
-      return this.currentDate.toLocaleDateString('id-ID', options);
+    filteredTransactions() {
+      if (!this.selectedMonth) {
+        return this.transactions; // Jika bulan tidak dipilih, tampilkan semua transaksi
+      }
+      return this.transactions.filter(transaction => {
+        const transactionMonth = new Date(transaction.tanggal_pembayaran).getMonth() + 1; // Mendapatkan bulan dari tanggal pembayaran
+        return transactionMonth.toString().padStart(2, '0') === this.selectedMonth; // Memfilter transaksi berdasarkan bulan yang dipilih
+      });
     },
-    calendar() {
-      const firstDayOfMonth = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), 1);
-      const lastDayOfMonth = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth() + 1, 0);
-
-      const startDayOfWeek = firstDayOfMonth.getDay(); // Mendapatkan hari pertama dalam minggu
-      const totalDaysOfMonth = lastDayOfMonth.getDate(); // Mendapatkan total hari dalam bulan
-
-      const weeks = [];
-      let currentWeek = [];
-
-      // Tambahkan hari kosong sebelum hari pertama dalam bulan
-      for (let i = 0; i < startDayOfWeek; i++) {
-        currentWeek.push(null);
-      }
-
-      // Iterasi untuk menambahkan tanggal-tanggal dalam bulan
-      for (let day = 1; day <= totalDaysOfMonth; day++) {
-        currentWeek.push({ date: day, isCurrentMonth: true });
-        if (currentWeek.length === 7) {
-          weeks.push(currentWeek);
-          currentWeek = [];
-        }
-      }
-
-      // Tambahkan hari kosong setelah tanggal terakhir dalam bulan
-      while (currentWeek.length < 7) {
-        currentWeek.push(null);
-      }
-
-      weeks.push(currentWeek);
-
-      return weeks;
+    totalPages() {
+      return Math.ceil(this.filteredTransactions.length / this.itemsPerPage);
     },
+    paginatedTransactions() {
+      const start = (this.currentPage - 1) * this.itemsPerPage;
+      const end = start + this.itemsPerPage;
+      return this.filteredTransactions.slice(start, end);
+    },
+    totalPayment() {
+      return this.filteredTransactions.reduce((total, transaction) => {
+        return total + (transaction.total_pembayaran || 0);
+      }, 0);
+    },
+  },
+  mounted() {
+    this.fetchTransactions();
   },
   methods: {
-    previousMonth() {
-      this.currentDate = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth() - 1, 1);
+    fetchTransactions() {
+      const token = localStorage.getItem('access_token');
+      if (!token) {
+        console.error("No access token found. Please log in.");
+        return;
+      }
+
+      axios.get('http://172.20.10.5:8000/api/transaksi', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+      .then(response => {
+        this.transactions = response.data.data || response.data;
+      })
+      .catch(error => {
+        console.error("Error fetching transactions:", error.response ? error.response.data : error);
+      });
     },
-    nextMonth() {
-      this.currentDate = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth() + 1, 1);
+    
+    formatRupiah(value) {
+      return new Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR'
+      }).format(value);
     },
-    selectDate(day) {
-      if (day && day.isCurrentMonth) {
-        this.selectedDate = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), day.date);
-        // Do something with the selected date
-        console.log('Selected Date:', this.selectedDate.toISOString());
+
+    formatNoBooking(transaction) {
+      const noBookingBadminton = transaction.no_booking_badminton || '';
+      const noBookingFutsal = transaction.no_booking_futsal || '';
+      const noBookingSoccer = transaction.no_booking_soccer || '';
+      
+      return [noBookingBadminton, noBookingFutsal, noBookingSoccer]
+        .filter(booking => booking)
+        .join(', ') || '-';
+    },
+
+    nextPage() {
+      if (this.currentPage < this.totalPages) {
+        this.currentPage++;
       }
     },
-    getDataForSelectedDate(selectedDate) {
-      // Contoh: Ambil data transaksi untuk tanggal tertentu
-      // Gantilah ini dengan logika yang sesuai dengan kebutuhan aplikasi Anda
-      const formattedDate = selectedDate.toISOString().split('T')[0];
-      return this.tableData.filter(item => item.tanggal === formattedDate);
+
+    prevPage() {
+      if (this.currentPage > 1) {
+        this.currentPage--;
+      }
     },
-  },
+
+    confirmPayment(transactionId) {
+      const token = localStorage.getItem('access_token');
+      if (!token) {
+        console.error("No access token found. Please log in.");
+        return;
+      }
+
+      axios.put(
+        `http://172.20.10.5:8000/api/transaksi/confirmation/${transactionId}`, // Adjust endpoint as needed
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      )
+      .then(response => {
+        console.log("Payment confirmed:", response.data);
+        this.fetchTransactions(); // Refresh the transaction list after confirmation
+      })
+      .catch(error => {
+        console.error("Error confirming payment:", error.response ? error.response.data : error);
+      });
+    },
+
+    filterTransactionsByMonth() {
+      this.currentPage = 1; // Reset to page 1 when filtering
+    },
+    
+    generatePDF() {
+      const doc = new jsPDF();
+
+      doc.setFontSize(18);
+      doc.text('Transaction List', 20, 20);
+
+      let yPosition = 30;
+      const tableHeaders = ['ID', 'Status Pembayaran', 'Tanggal Pembayaran', 'No Booking', 'ID User', 'Total Pembayaran', 'Bukti Pembayaran'];
+      doc.setFontSize(12);
+
+      // Generate the table with autotable plugin
+      doc.autoTable({
+        startY: yPosition,
+        head: [tableHeaders],
+        body: this.filteredTransactions.map(transaction => [
+          transaction.id,
+          transaction.status_pembayaran,
+          transaction.tanggal_pembayaran || '-',
+          this.formatNoBooking(transaction),
+          transaction.id_user,
+          this.formatRupiah(transaction.total_pembayaran),
+          transaction.bukti_pembayaran ? 'Available' : '-',
+        ]),
+        margin: { top: 20, left: 10, right: 10 },
+        theme: 'striped',
+      });
+
+      // Add Total Payment after the table
+      const totalPayment = this.totalPayment; // Get total payment value
+      yPosition = doc.lastAutoTable.finalY + 10; // Position below the table
+      doc.setFontSize(14);
+      doc.text(`Total Pembayaran: ${this.formatRupiah(totalPayment)}`, 20, yPosition);
+
+      doc.save('transaction_list.pdf');
+    }
+  }
 };
 </script>
 
 <style scoped>
-.calendar {
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-}
-
 table {
   width: 100%;
   border-collapse: collapse;
+  margin: 20px 0;
 }
 
-th,
-td {
-  padding: 0.5rem;
-  text-align: center;
+th, td {
+  padding: 8px;
+  text-align: left;
   border: 1px solid #ddd;
-}
-
-td:hover {
-  background-color: #f5f5f5;
-  cursor: pointer;
 }
 
 th {
   background-color: #f2f2f2;
 }
 
-/* Add margin or padding to create separation between table rows */
-.table-row {
-  margin-bottom: 10px; /* Adjust the value based on your preference */
+.pagination {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.pagination button {
+  margin: 0 5px;
+  padding: 5px 10px;
+}
+
+.total-payment {
+  margin-top: 20px;
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+.generate-pdf-button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.generate-pdf-button:hover {
+  background-color: #45a049;
 }
 </style>

@@ -7,7 +7,7 @@
         <h3>{{ minisoccer.nama }}</h3>
         <p>Harga: {{ formatCurrency(minisoccer.harga) }}</p>
         <p>{{ minisoccer.keterangan }}</p>
-        <img :src="`http://127.0.0.1:8000/storage/${(minisoccer.gambar).substring(7)}`" alt="Gambar Lapangan" width="200px" height="auto" style="margin-bottom: 16px">
+        <img :src="`http://172.20.10.5:8000/storage/${(minisoccer.gambar).substring(7)}`" alt="Gambar Lapangan" width="200px" height="auto" style="margin-bottom: 16px">
         <div>
           <button type="button" class="btn btn-primary" @click="editMinisoccer(minisoccer.id)">Edit</button>
           &nbsp;
@@ -31,8 +31,9 @@ export default {
     this.fetchMinisoccers();
   },
   methods: {
+
     fetchMinisoccers() {
-      axios.get('http://127.0.0.1:8000/api/soccer')
+      axios.get('http://172.20.10.5:8000/api/soccer')
         .then(response => {
           this.minisoccers = response.data.data;
         })
@@ -40,6 +41,7 @@ export default {
           console.error(error);
         });
     },
+
     addMiniSoccer() {
       this.$router.push({ name: 'AddMiniSoccer' });
     },
@@ -51,8 +53,9 @@ export default {
         this.deleteMinisoccer(id);
       }
     },
+
     deleteMinisoccer(id) {
-      axios.delete(`http://127.0.0.1:8000/api/soccer/${id}`)
+      axios.delete(`http://172.20.10.5:8000/api/soccer/${id}`)
         .then(response => {
           console.log('Lapangan mini soccer berhasil dihapus:', response.data);
           this.fetchMinisoccers();
@@ -61,6 +64,7 @@ export default {
           console.error('Error saat menghapus lapangan mini soccer:', error);
         });
     },
+    
     formatCurrency(amount) {
       return new Intl.NumberFormat('id-ID', {
         style: 'currency',

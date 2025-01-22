@@ -9,23 +9,41 @@
         <div class="login-box-body">
           <p class="login-box-msg">Log in to start your session</p>
 
+          <!-- Tampilkan pesan error jika ada -->
+          <div v-if="error" class="alert alert-danger">
+            {{ error }}
+          </div>
+
           <form @submit.prevent="login" class="login-form">
             <div class="form-group has-feedback">
-              <input type="text" v-model="email" class="form-control" placeholder="Email" required>
+              <input
+                type="text"
+                v-model="email"
+                class="form-control"
+                placeholder="Username"
+                required
+              />
               <span class="glyphicon glyphicon-user form-control-feedback"></span>
             </div>
-            <br>
+            <br />
             <div class="form-group has-feedback">
-              <input type="password" v-model="password" class="form-control" placeholder="Password" required>
+              <input
+                type="password"
+                v-model="password"
+                class="form-control"
+                placeholder="Password"
+                required
+              />
               <span class="glyphicon glyphicon-lock form-control-feedback"></span>
             </div>
             <div class="row">
-              <div class="col-xs-8">
-              </div>
+              <div class="col-xs-8"></div>
               <!-- /.col -->
-              <br>
+              <br />
               <div class="col-xs-4">
-                <button type="submit" class="btn btn-primary btn-block btn-flat">Log In</button>
+                <button type="submit" class="btn btn-primary btn-block btn-flat">
+                  Log In
+                </button>
               </div>
               <!-- /.col -->
             </div>
@@ -42,13 +60,13 @@
 
 <script>
 // Import Axios
-import axios from 'axios';
+import axios from "axios";
 
 export default {
   data() {
     return {
-      email: '',
-      password: '',
+      email: "",
+      password: "",
       error: null,
     };
   },
@@ -56,33 +74,40 @@ export default {
     async login() {
       try {
         // Kirim permintaan login menggunakan Axios
-        const response = await axios.post('http://127.0.0.1:8000/api/login', {
+        const response = await axios.post("http://172.20.10.5:8000/api/login", {
           email: this.email,
-          password: this.password
+          password: this.password,
         });
 
         // Cek status respons
-        if (response.status === 200) {
+        if (response.status === 200 && response.data.access_token) {
           // Login berhasil
-          console.log('Login successful');
+          console.log("Login successful");
           this.error = null;
+
+          // Simpan access_token ke localStorage
+          localStorage.setItem("access_token", response.data.access_token);
+
           // Redirect ke halaman Home
-          this.$router.push('home');
+          this.$router.push("home");
         } else {
-          // Login gagal karena respons status bukan 200
-          console.error('Login failed');
-          this.error = 'Invalid username or password';
+          // Login gagal
+          this.error = "Invalid username or password";
         }
       } catch (error) {
-        // Tangani kesalahan saat melakukan permintaan
-        console.error('Error during login:', error);
-        this.error = 'An error occurred during login';
+        if (error.response && error.response.status === 401) {
+          // Tangani error login dari API (contoh: 401 Unauthorized)
+          this.error = "Invalid username or password";
+        } else {
+          // Tangani kesalahan lainnya
+          console.error("Error during login:", error);
+          this.error = "An error occurred during login";
+        }
       }
     },
   },
 };
 </script>
-
 
 <style scoped>
 .login-wrapper {
@@ -132,23 +157,24 @@ export default {
   height: 45px;
 }
 
-.checkbox {
-  margin-top: 0;
+.alert {
+  color: #a94442;
+  background-color: #f2dede;
+  border-color: #ebccd1;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  text-align: center;
 }
 
 .btn-flat {
   border-radius: 4px;
 }
 
-.btn-social {
-  color: #fff;
-}
-
-.btn-facebook {
-  background-color: #3b5998;
-}
-
-.btn-google {
-  background-color: #dd4b39;
+.glyphicon {
+  position: absolute;
+  top: 12px;
+  right: 15px;
+  color: #999;
 }
 </style>

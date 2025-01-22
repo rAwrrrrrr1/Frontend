@@ -44,7 +44,7 @@
     </div>
 
     <div class="row button-container mt-4">
-      <div class="col">
+      <!-- <div class="col">
         <button
           class="btn btn-toggle"
           :class="{ 'btn-active': switch1 }"
@@ -52,8 +52,8 @@
         >
           Maintenance
         </button>
-      </div>
-      <div class="col">
+      </div> -->
+      <!-- <div class="col">
         <button
           class="btn btn-toggle"
           :class="{ 'btn-active': switch2 }"
@@ -61,7 +61,7 @@
         >
           Allow Booking
         </button>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -91,7 +91,7 @@ export default {
     async generateJadwalThisMonth() {
       this.loadingGenerateThisMonth = true;
       try {
-        const response = await axios.post('http://127.0.0.1:8000/api/generateJadwalThisMonth');
+        const response = await axios.post('http://172.20.10.5:8000/api/generateJadwalThisMonth');
         this.showNotification('Jadwal bulan ini berhasil digenerate');
         console.log('Jadwal bulan ini berhasil digenerate:', response.data);
       } catch (error) {
@@ -103,7 +103,7 @@ export default {
     async generateJadwalNextMonth() {
       this.loadingGenerateNextMonth = true;
       try {
-        const response = await axios.post('http://127.0.0.1:8000/api/generateJadwalNextMonth');
+        const response = await axios.post('http://172.20.10.5:8000/api/generateJadwalNextMonth');
         this.showNotification('Jadwal bulan depan berhasil digenerate');
         console.log('Jadwal bulan depan berhasil digenerate:', response.data);
       } catch (error) {
@@ -115,7 +115,7 @@ export default {
     async clearCache() {
       this.loadingClearCache = true;
       try {
-        const response = await axios.delete('http://127.0.0.1:8000/api/clearCache');
+        const response = await axios.delete('http://172.20.10.5:8000/api/clearCache');
         this.showNotification('Cache berhasil dikosongkan');
         console.log('Cache berhasil dikosongkan:', response.data);
       } catch (error) {
@@ -127,14 +127,14 @@ export default {
     async toggleSwitch1() {
         try {
             // Get the current maintenance status
-            const getStatusResponse = await axios.get('http://127.0.0.1:8000/api/maintenance/getStatus');
+            const getStatusResponse = await axios.get('http://172.20.10.5:8000/api/maintenance/getStatus');
             let currentStatus = getStatusResponse.data.maintenance;
 
             // Toggle the status: if 1, set to 0; if 0, set to 1
             const newStatus = currentStatus === 1 ? 0 : 1;
 
             // Update the maintenance mode status
-            const response = await axios.put('http://127.0.0.1:8000/api/maintenance', {
+            const response = await axios.put('http://172.20.10.5:8000/api/maintenance', {
                 maintenance: newStatus,
             });
 
@@ -151,7 +151,7 @@ export default {
     async toggleSwitch2() {
         this.switch2 = !this.switch2;
         try {
-        const response = await axios.put('http://127.0.0.1:8000/api/allowBooking', {
+        const response = await axios.put('http://172.20.10.5:8000/api/allowBooking', {
             allowBooking: this.switch2,
         });
         this.showNotification(`Booking ${this.switch2 ? 'allowed' : 'disallowed'}`);

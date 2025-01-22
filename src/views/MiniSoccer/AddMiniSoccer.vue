@@ -44,6 +44,7 @@
       handleFileUpload(event) {
         this.form.gambar = event.target.files[0];
       },
+
       submitForm() {
         let formData = new FormData();
         formData.append('nama', this.form.nama);
@@ -51,7 +52,7 @@
         formData.append('keterangan', this.form.keterangan);
         formData.append('gambar', this.form.gambar);
   
-        axios.post('http://127.0.0.1:8000/api/soccer', formData, {
+        axios.post('http://172.20.10.5:8000/api/soccer', formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
@@ -64,6 +65,7 @@
           console.error('Error saat menambahkan lapangan mini soccer:', error);
         });
       },
+      
       goBack() {
         this.$router.go(-1); 
       }
